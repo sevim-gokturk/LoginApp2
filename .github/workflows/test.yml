@@ -1,0 +1,51 @@
+name: Playwright API Tests
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # ---------- Root package.json bağımlılıkları ----------
+      - name: Install root dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build backend
+        run: npm run build
+
+      # ---------- TestPlaywright bağımlılıkları ----------
+      - name: Install Playwright dependencies
+        working-directory: TestPlaywright
+        run: npm ci
+
+      # ---------- Backend serveri başlat ----------
+      - name: Start backend server
+        run: |
+          npm run start:dev &
+          sleep 5
+        working-directory: backend
+
+      # ---------- Playwright testlerini çalıştır ----------
+      - name: Run Playwright tests
+        working-directory: TestPlaywright
+        run: npx playwright test --reporter=list
+
+      # ---------- Test raporlarını yükle ----------
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: TestPlaywright/playwright-report/
