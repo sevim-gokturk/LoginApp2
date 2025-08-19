@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "start:ci": "node app.js & wait-on http://127.0.0.1:3000 --timeout 10000 --interval 500"
+    "start:ci": "node app.js & wait-on http://localhost:3000 --timeout 15000 --interval 500"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
