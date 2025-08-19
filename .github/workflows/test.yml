@@ -12,33 +12,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ---------- Repo'yu checkout et ----------
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # ---------- Node.js kur ----------
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # ---------- Root package.json bağımlılıkları ----------
-      - name: Install root dependencies
+      # ---------- Backend bağımlılıklarını kur ----------
+      - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
+      # ---------- Backend build ----------
       - name: Build backend
+        working-directory: backend
         run: npm run build
 
-      # ---------- TestPlaywright bağımlılıkları ----------
+      # ---------- Playwright bağımlılıklarını kur ----------
       - name: Install Playwright dependencies
         working-directory: TestPlaywright
         run: npm ci
 
-      # ---------- Backend serveri başlat ----------
+      # ---------- Backend serveri başlat ve hazır olmasını bekle ----------
       - name: Start backend server
+        working-directory: backend
         run: |
           npm run start:dev &
-          sleep 20
-        working-directory: backend
+          npx wait-on http://localhost:3000
 
       # ---------- Playwright testlerini çalıştır ----------
       - name: Run Playwright tests
