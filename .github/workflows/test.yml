@@ -35,9 +35,7 @@ jobs:
       # ---------- Backend serveri başlat ----------
       - name: Start backend server
         working-directory: backend
-        run: |
-          npm run start &                  # backend server background'da başlasın
-          npx wait-on http://127.0.0.1:3000
+        run: npm run start:ci
 
       # ---------- Playwright testlerini çalıştır ----------
       - name: Run Playwright tests
