@@ -12,53 +12,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # -------------------- Checkout repo --------------------
+      # ---------- Repo checkout ----------
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # -------------------- Setup Node --------------------
+      # ---------- Node.js kur ----------
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # -------------------- Root backend dependencies --------------------
+      # ---------- Backend bağımlılıkları ----------
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
-      # -------------------- Backend build (varsa) --------------------
-      - name: Build backend
-        working-directory: backend
-        run: |
-          if npm run | grep build; then
-            npm run build
-          else
-            echo "No build script, skipping..."
-          fi
-
-      # -------------------- TestPlaywright dependencies --------------------
+      # ---------- TestPlaywright bağımlılıkları ----------
       - name: Install Playwright dependencies
         working-directory: TestPlaywright
         run: npm ci
 
-      # -------------------- Install wait-on --------------------
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      # -------------------- Start backend server --------------------
+      # ---------- Backend serveri başlat ----------
       - name: Start backend server
         working-directory: backend
         run: |
-          npm run start &                  # backend start scripti
+          npm run start &                  # backend server background'da başlasın
           npx wait-on http://127.0.0.1:3000
 
-      # -------------------- Run Playwright tests --------------------
+      # ---------- Playwright testlerini çalıştır ----------
       - name: Run Playwright tests
         working-directory: TestPlaywright
         run: npx playwright test --reporter=list
 
-      # -------------------- Upload test report --------------------
+      # ---------- Test raporlarını yükle ----------
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         with:
