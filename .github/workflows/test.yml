@@ -2,8 +2,10 @@ name: Playwright API Tests
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ master ]
   pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   playwright-tests:
